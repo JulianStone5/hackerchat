@@ -1,6 +1,6 @@
 # HackerChat
 ## Software Systems Project 1
-### Ashley, Nathan, Sherrie
+### Ashley Swanson, Nathan Shuster, Sherrie Shen
 #### Feb 17th, 2019
 
 ## Project Goals
