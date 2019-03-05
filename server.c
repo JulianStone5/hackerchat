@@ -1,9 +1,12 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <sys/socket.h>
+#include <sys/types.h>
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <string.h>
+#include <errno.h>
+
 #define PORT 8080
 int listener;
 int queue_size = 10;
@@ -16,7 +19,7 @@ void bind_to_port(int socket){
                                           /*interfaces, constant = 0*/
   int reuse = 1;
   // Forcefully attaching socket to make it sticky so can be reused, parameter(socket, level, option)
-  if (setsocketopt(socket, SOL_SOCKET, SO_REUSEADDR, (char *)&reuse, sizeof(int)) == -1){
+  if (setsockopt(socket, SOL_SOCKET, SO_REUSEADDR, (char *)&reuse, sizeof(int)) == -1){
     perror("Can't set the reuse option on the socket");
   }
   int c = bind(socket, (struct sockaddr *) &name, sizeof(name)); // grab the port
@@ -56,6 +59,30 @@ void handle_shutdown(int sig){
   exit(0);
 }
 
+/*Reads input into buffer of size len or until reaches '/n'
+  calling recv doesn't guarantee a full read, so it is called more than once*/
+int read_in(int socket, char *buf, int len)
+{
+  char *s = buf;
+  int slen = len;
+  int c = recv(socket, s, slen, 0); /*descriptor, buffer, bytes to read, 0*/
+  while ((c > 0) && (s[c-1] != '\n')) {
+    s += c;
+    slen -= c;
+    c = recv(socket, s, slen, 0);
+    /*returning length (of characters) of input*/
+  }
+  if (c < 0)
+    return c;
+  else if (c == 0)
+    buf[0] = '\0';
+  else
+    s[c-1]='\0';
+  return len - slen;
+
+}
+
+
 int main(int argc, char *argv[]){
   listener = open_listener_socket(); // create internet streaming socket
   bind_to_port(listener); // bind the socket on the port
@@ -63,17 +90,26 @@ int main(int argc, char *argv[]){
     perror("Can't listen!");
     exit(EXIT_FAILURE);
   }
-  struct sckaddr_storage client_addr
+  struct sockaddr_storage client_addr;
   unsigned int address_size = sizeof(client_addr);
-  int connect_d = accept(listener_d, (struct sockaddr *)&client_addr, &address_size);
-  if(connect_d == -1){
-    perror("Can't open secondary socket");
-  }
-  puts("Waiting for connection");
-  char buf[255];
-  while(1){
-    
-  }
 
-  returns 0;
+  puts("Waiting for connection...\n");
+  char buf[1024];
+  int connect_d;
+  while(1){
+    connect_d = accept(listener, (struct sockaddr *)&client_addr, &address_size);
+    if(connect_d == -1){
+      perror("Can't open secondary socket");
+    }
+    if (say(connect_d, "Type your message:\r\nHack3rCh@t v1.0\r\n") != -1) {
+      read_in(connect_d, buf, sizeof(buf));
+      printf("Message: %s\n", buf);
+      say(connect_d, "Message Received.\r\n");
+    }
+  }
+  close(connect_d);
+
+
+
+  return 0;
 }
