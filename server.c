@@ -78,6 +78,7 @@ int read_in(int socket, char *buf, int len)
     buf[0] = '\0';
   else
     s[c-1]='\0';
+  printf("testest1212%c\n", buf[0]);
   return len - slen;
 
 }
@@ -101,7 +102,7 @@ int main(int argc, char *argv[]){
     if(connect_d == -1){
       perror("Can't open secondary socket");
     }
-    if (say(connect_d, "Type your message:\r\nHack3rCh@t v1.0\r\n") != -1) {
+    if (say(connect_d, "Hack3rCh@t\r\nv1.0\r\nType your message:\r\n") != -1) {
       read_in(connect_d, buf, sizeof(buf));
       printf("Message: %s\n", buf);
       say(connect_d, "Message Received.\r\n");
