@@ -7,7 +7,7 @@
 #include <string.h>
 #include <errno.h>
 
-#define PORT 8080
+#define PORT 4444
 int listener;
 int queue_size = 10;
 
