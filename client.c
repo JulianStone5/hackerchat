@@ -54,13 +54,19 @@ int main(int argc, char const *argv[])
     }
 
     while(fgets(buffer, BUF_SIZE, stdin) != NULL) {
-        int ret = send(sock , hello , strlen(hello) , 0 );
+        //int ret = send(sock , hello , strlen(hello) , 0 );
+        int ret = send(sock , buffer , BUF_SIZE , 0 );
         if(ret < 0) {
           printf("Error sending data");
         }
-        send(sock , buffer , BUF_SIZE , 0 );
-        printf("Hello message sent\n");
-        valread = read( sock , buffer, 1024);
+        printf("Message sent\n");
+        //creating a new thread for receiving messages from the server
+        ret = pthread_create(&rThread, NULL, read, (void *) sockfd);
+        if (ret) {
+         printf("ERROR: Return Code from pthread_create() is %d\n", ret);
+         exit(1);
+        }
+        //valread = read( sock , buffer, 1024);
         printf("%s\n",buffer );
     }
     return 0;
