@@ -10,9 +10,11 @@
 #include <errno.h>
 
 #define PORT 4444
-#define BUF_SIZE 2000
+#define BUF_SIZE 1024
 int listener;
 int queue_size = 10;
+char username[20] = "client";
+int username_flag = 1; // 1: haven't set usrname; 0: usrname set
 
 void * receiveMessage(void * socket) {
  int sockfd, ret;
@@ -21,12 +23,24 @@ void * receiveMessage(void * socket) {
  memset(buffer, 0, BUF_SIZE);
  for (;;) {
   ret = recv(sockfd , buffer, BUF_SIZE,0);
-  if (ret < 0) {
+  if(ret == 0){
+    printf("Client not available! Please Ctrl-D");
+    pthread_exit(NULL);
+    exit(0);
+  }
+  else if (ret < 0) {
    printf("Error receiving data!\n");
   } else {
-   printf("server: ");
-   fputs(buffer, stdout);
-   //printf("\n");
+   if(username_flag){
+     memset(username, 0, sizeof(username));
+     strncpy(username, buffer,strlen(buffer)-1);
+     username_flag = 0;
+     printf("Client Username: %s\n",buffer);
+   }
+   else{
+     printf("%s: ",username);
+     fputs(buffer, stdout);
+   }
   }
  }
 }
@@ -79,29 +93,29 @@ void handle_shutdown(int sig){
   exit(0);
 }
 
-/*Reads input into buffer of size len or until reaches '/n'
-  calling recv doesn't guarantee a full read, so it is called more than once*/
-int read_in(int socket, char *buf, int len)
-{
-  char *s = buf;
-  int slen = len;
-  int c = recv(socket, s, slen, 0); /*descriptor, buffer, bytes to read, 0*/
-  while ((c > 0) && (s[c-1] != '\n')) {
-    s += c;
-    slen -= c;
-    c = recv(socket, s, slen, 0);
-    /*returning length (of characters) of input*/
-  }
-  if (c < 0)
-    return c;
-  else if (c == 0)
-    buf[0] = '\0';
-  else
-    s[c-1]='\0';
-  printf("testest1212%c\n", buf[0]);
-  return len - slen;
-
-}
+// /*Reads input into buffer of size len or until reaches '/n'
+//   calling recv doesn't guarantee a full read, so it is called more than once*/
+// int read_in(int socket, char *buf, int len)
+// {
+//   char *s = buf;
+//   int slen = len;
+//   int c = recv(socket, s, slen, 0); /*descriptor, buffer, bytes to read, 0*/
+//   while ((c > 0) && (s[c-1] != '\n')) {
+//     s += c;
+//     slen -= c;
+//     c = recv(socket, s, slen, 0);
+//     /*returning length (of characters) of input*/
+//   }
+//   if (c < 0)
+//     return c;
+//   else if (c == 0)
+//     buf[0] = '\0';
+//   else
+//     s[c-1]='\0';
+//   printf("testest1212%c\n", buf[0]);
+//   return len - slen;
+//
+// }
 
 int main(int argc, char *argv[]){
   int ret;

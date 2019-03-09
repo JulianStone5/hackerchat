@@ -13,6 +13,8 @@
 #define PORT 4444
 #define BUF_SIZE 1024
 
+int username_flag = 1;
+
 void * receiveMessage(void * socket) {
  int sockfd, ret;
  char buffer[BUF_SIZE];
@@ -20,7 +22,12 @@ void * receiveMessage(void * socket) {
  memset(buffer, 0, BUF_SIZE);
  for (;;) {
   ret = recv(sockfd , buffer, BUF_SIZE,0);
-  if (ret < 0) {
+  if(ret == 0){ //ret = 0
+    printf("Server not available! Please Ctrl-D");
+    pthread_exit(NULL);
+    exit(0);
+  }
+  else if (ret < 0) {
    printf("Error receiving data!\n");
   } else {
    printf("server: ");
@@ -33,7 +40,7 @@ void * receiveMessage(void * socket) {
 int main(int argc, char const *argv[])
 {
     struct sockaddr_in address;
-    int sock = 0, valread;
+    int sock = 0;
     struct sockaddr_in serv_addr;
     char *hello = "Hello from client";
     char buffer[BUF_SIZE] = {0};
@@ -79,11 +86,17 @@ int main(int argc, char const *argv[])
      exit(1);
     }
 
+    if(username_flag){
+      printf("Hack3rCh@t v1.0\nEnter your username: ");
+      username_flag = 0;
+    }
+
     while(fgets(buffer, BUF_SIZE, stdin) != NULL) {
         //int ret = send(sock , hello , strlen(hello) , 0 );
         ret = send(sock , buffer , BUF_SIZE , 0);
         if(ret < 0) {
           printf("Error sending data");
+          exit(1);
         }
         printf("Message sent\n");
         //valread = read( sock , buffer, 1024);
