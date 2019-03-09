@@ -4,12 +4,32 @@
 #include <sys/types.h>
 #include <stdlib.h>
 #include <netinet/in.h>
+#include <pthread.h>
+#include <arpa/inet.h>
 #include <string.h>
 #include <errno.h>
 
 #define PORT 4444
+#define BUF_SIZE 2000
 int listener;
 int queue_size = 10;
+
+void * receiveMessage(void * socket) {
+ int sockfd, ret;
+ char buffer[BUF_SIZE];
+ sockfd = (int) socket;
+ memset(buffer, 0, BUF_SIZE);
+ for (;;) {
+  ret = recv(sockfd , buffer, BUF_SIZE,0);
+  if (ret < 0) {
+   printf("Error receiving data!\n");
+  } else {
+   printf("server: ");
+   fputs(buffer, stdout);
+   //printf("\n");
+  }
+ }
+}
 
 void bind_to_port(int socket){
   struct sockaddr_in name; /* create socket descriptor*/
@@ -31,7 +51,7 @@ void bind_to_port(int socket){
 }
 
 int open_listener_socket(){
-  int listener_d = socket(PF_INET, SOCK_STREAM, 0); //Sock stream is connection orientated
+  int listener_d = socket(AF_INET, SOCK_STREAM, 0); //Sock stream is connection orientated
   if(listener_d == -1){
     perror("Can't open socket");
     exit(EXIT_FAILURE);
@@ -83,8 +103,9 @@ int read_in(int socket, char *buf, int len)
 
 }
 
-
 int main(int argc, char *argv[]){
+  int ret;
+
   listener = open_listener_socket(); // create internet streaming socket
   bind_to_port(listener); // bind the socket on the port
   if (listen(listener,queue_size) == -1){ // set queue size for listening
@@ -93,24 +114,45 @@ int main(int argc, char *argv[]){
   }
   struct sockaddr_storage client_addr;
   unsigned int address_size = sizeof(client_addr);
+  pthread_t rThread;
 
   puts("Waiting for connection...\n");
-  char buf[1024];
+  char buffer[BUF_SIZE];
   int connect_d;
-  while(1){
-    connect_d = accept(listener, (struct sockaddr *)&client_addr, &address_size);
-    if(connect_d == -1){
-      perror("Can't open secondary socket");
-    }
-    if (say(connect_d, "Hack3rCh@t\r\nv1.0\r\nType your message:\r\n") != -1) {
-      read_in(connect_d, buf, sizeof(buf));
-      printf("Message: %s\n", buf);
-      say(connect_d, "Message Received.\r\n");
-    }
+
+  connect_d = accept(listener, (struct sockaddr *)&client_addr, &address_size);
+  if(connect_d == -1){
+    perror("Can't open secondary socket!");
   }
+  else{
+    printf("Client found!\n");
+  }
+
+  memset(buffer, 0, BUF_SIZE);
+  printf("Enter your messages one by one and press return key!\n");
+
+  //creating a new thread for receiving messages from the client
+  ret = pthread_create(&rThread, NULL, receiveMessage, (void *) connect_d);
+  if (ret) {
+   printf("ERROR: Return Code from pthread_create() is %d\n", ret);
+   exit(1);
+  }
+
+  while (fgets(buffer, BUF_SIZE, stdin) != NULL) {
+   ret = send(connect_d, buffer, BUF_SIZE, 0);
+   if (ret < 0) {
+    printf("Error sending data!\n");
+    exit(1);
+   }
+  }
+
+  // if (say(connect_d, "Hack3rCh@t\r\nv1.0\r\nType your message:\r\n") != -1) {
+  //   read_in(connect_d, buffer, BUF_SIZE);
+  //   printf("Message: %s\n", buffer);
+  //   say(connect_d, "Message Received.\r\n");
+  // }
   close(connect_d);
-
-
-
+  close(listener);
+  pthread_exit(NULL);
   return 0;
 }

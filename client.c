@@ -19,7 +19,7 @@ void * receiveMessage(void * socket) {
  sockfd = (int) socket;
  memset(buffer, 0, BUF_SIZE);
  for (;;) {
-  ret = read(sockfd , buffer, BUF_SIZE);
+  ret = recv(sockfd , buffer, BUF_SIZE,0);
   if (ret < 0) {
    printf("Error receiving data!\n");
   } else {
