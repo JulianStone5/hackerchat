@@ -1,7 +1,7 @@
 # HackerChat
 ## Software Systems Project 1
 ### Ashley Swanson, Nathan Shuster, Sherrie Shen
-#### Feb 17th, 2019
+#### March 10th, 2019
 
 ## Project Goals
 The goal of this project is to create a chat app using socket programming. Our minimum viable product is a two-way chat where the server and the client each represent a user, and each selects a username at the start. A more ambitious version that we would like to strive for is a server that connects to multiple clients at once and passes messages between them using forking. We would also like to add an in-app game such as rock-paper-scissors to learn more about data processing on the server-side.
