@@ -14,16 +14,18 @@
 #define TRUE   1
 #define FALSE  0
 #define PORT 9000
+#define BUF_SIZE 1024
+#define CLIENT_NUM 30
 
 int main(int argc , char *argv[])
 {
     int opt = TRUE;
-    int master_socket , addrlen , new_socket , client_socket[30] ,
-          max_clients = 30 , activity, i , valread , sd;
+    int master_socket , addrlen , new_socket , client_socket[CLIENT_NUM] ,
+          max_clients = CLIENT_NUM , activity, i , valread , sd;
     int max_sd;
     struct sockaddr_in address;
 
-    char buffer[1025];  //data buffer of 1K
+    char buffer[BUF_SIZE];  //data buffer of 1K
 
     //set of socket descriptors
     fd_set readfds;
@@ -155,7 +157,7 @@ int main(int argc , char *argv[])
             {
                 //Check if it was for closing , and also read the
                 //incoming message
-                if ((valread = read( sd , buffer, 1024)) == 0)
+                if ((valread = read( sd , buffer, BUF_SIZE)) == 0)
                 {
                     //Somebody disconnected , get his details and print
                     getpeername(sd , (struct sockaddr*)&address , (socklen_t*)&addrlen);
@@ -176,10 +178,10 @@ int main(int argc , char *argv[])
                       send(sd , buffer , strlen(buffer) , 0 );
                     }
                   }
-                    //set the string terminating NULL byte on the end
-                    //of the data read
-                    //buffer[valread] = '\0';
-                    //send(sd , buffer , strlen(buffer) , 0 );
+                    // //set the string terminating NULL byte on the end
+                    // // of the data read
+                    // buffer[valread] = '\0';
+                    // send(sd , buffer , strlen(buffer) , 0 );
                 }
 
             }

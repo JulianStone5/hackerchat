@@ -10,7 +10,7 @@
 #include <arpa/inet.h>
 #include <netdb.h>
 
-#define PORT 4444
+#define PORT 9000
 #define BUF_SIZE 1024
 
 int username_flag = 1;
@@ -19,8 +19,8 @@ void * receiveMessage(void * socket) {
  int sockfd, ret;
  char buffer[BUF_SIZE];
  sockfd = (int) socket;
- memset(buffer, 0, BUF_SIZE);
  for (;;) {
+  memset(buffer, 0, BUF_SIZE);
   ret = recv(sockfd , buffer, BUF_SIZE,0);
   if(ret == 0){ //ret = 0
     printf("Server not available! Please Ctrl-D");
@@ -101,6 +101,7 @@ int main(int argc, char const *argv[])
         printf("Message sent\n");
         //valread = read( sock , buffer, 1024);
         //printf("%s\n",buffer );
+        memset(buffer, '0', BUF_SIZE);
     }
     close(sock);
     pthread_exit(NULL);
