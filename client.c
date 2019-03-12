@@ -87,7 +87,7 @@ int main(int argc, char const *argv[])
     }
 
     if(username_flag){
-      printf("Hack3rCh@t v1.0\nEnter your username: ");
+      printf("Hack3rCh@t v1.0\n");
       username_flag = 0;
     }
 
