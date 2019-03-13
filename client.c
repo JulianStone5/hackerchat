@@ -30,7 +30,7 @@ void * receiveMessage(void * socket) {
   else if (ret < 0) {
    printf("Error receiving data!\n");
   } else {
-   printf("server: ");
+   // printf("server: ");
    fputs(buffer, stdout);
    //printf("\n");
   }
@@ -88,17 +88,22 @@ int main(int argc, char const *argv[])
 
     if(username_flag){
       printf("Hack3rCh@t v1.0\n");
-      username_flag = 0;
+
     }
 
     while(fgets(buffer, BUF_SIZE, stdin) != NULL) {
         //int ret = send(sock , hello , strlen(hello) , 0 );
+        // if (username_flag) {
+        //   // buffer[strlen(buffer)] = ':';
+        //   // buffer[strlen(buffer)+1] = '\0';
+        // }
         ret = send(sock , buffer , BUF_SIZE , 0);
+        // username_flag = 0;
         if(ret < 0) {
           printf("Error sending data");
           exit(1);
         }
-        printf("Message sent\n");
+        // printf("Message sent\n");
         //valread = read( sock , buffer, 1024);
         //printf("%s\n",buffer );
         memset(buffer, '0', BUF_SIZE);

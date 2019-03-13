@@ -24,6 +24,7 @@ int main(int argc , char *argv[])
           max_clients = CLIENT_NUM , activity, i , valread , sd;
     int max_sd;
     struct sockaddr_in address;
+    char usernames[CLIENT_NUM][24];
 
     char buffer[BUF_SIZE];  //data buffer of 1K
 
@@ -140,6 +141,13 @@ int main(int argc , char *argv[])
                 //if position is empty
                 if( client_socket[i] == 0 )
                 {
+
+                    valread = read( new_socket , usernames[i], 24);
+                    printf("%d", valread);
+                    //usernames[i][valread] = ':';
+                    //usernames[i][valread] = '\0';
+
+
                     client_socket[i] = new_socket;
                     printf("Adding to list of sockets as %d\n" , i);
 
@@ -172,10 +180,16 @@ int main(int argc , char *argv[])
                 else
                 {
                   for (int j = 0; j < max_clients; j++) {
+                    printf("valread: %d", valread);
                     sd = client_socket[j];
                     buffer[valread] = '\0';
+
+                    printf("%s\n", usernames[i]);
+                    // strncpy(buffer, usernames[i], strlen(usernames[i])-1);
                     if (j != i) {
                       send(sd , buffer , strlen(buffer) , 0 );
+                      send(sd , usernames[i] , 24 , 0 );
+
                     }
                   }
                     // //set the string terminating NULL byte on the end
