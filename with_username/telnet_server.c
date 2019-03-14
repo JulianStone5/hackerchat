@@ -167,10 +167,23 @@ int main(int argc , char *argv[])
                     //Somebody disconnected , get his details and print
                     getpeername(sd , (struct sockaddr*)&address , (socklen_t*)&addrlen);
                     printf("Host disconnected , ip %s , port %d \n" , inet_ntoa(address.sin_addr) , ntohs(address.sin_port));
-
                     //Close the socket and mark as 0 in list for reuse
                     close( sd );
                     client_socket[i] = 0;
+
+                    // signal everyone else user quit
+                    char message_quit[BUF_SIZE];
+                    printf("username: %s, %d\n", usernames[i], strlen(usernames[i]));
+                    usernames[i][strlen(usernames[i])-1] = '\0';
+                    sprintf(message_quit, "%s quit the chat\n",usernames[i]);
+                    username_flag[i] = 0;
+                    memset(usernames[i],0,BUF_SIZE);
+
+                    for(int k = 0; k < max_clients; k++){
+                      sd = client_socket[k];
+                      send(sd,message_quit,strlen(message_quit),0);
+                    }
+
                 }
 
                 //Echo back the message that came in
