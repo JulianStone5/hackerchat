@@ -141,10 +141,6 @@ int main(int argc , char *argv[])
                 //if position is empty
                 if( client_socket[i] == 0 )
                 {
-                    // valread = read( new_socket , usernames[i], 24);
-                    // printf("%d", valread);
-                    //usernames[i][valread] = ':';
-                    //usernames[i][valread] = '\0';
                     client_socket[i] = new_socket;
                     printf("Adding to list of sockets as %d\n" , i);
 
@@ -173,8 +169,7 @@ int main(int argc , char *argv[])
 
                     // signal everyone else user quit
                     char message_quit[BUF_SIZE];
-                    printf("username: %s, %d\n", usernames[i], strlen(usernames[i]));
-                    usernames[i][strlen(usernames[i])-1] = '\0';
+                    printf("username: %s\n", usernames[i]);
                     sprintf(message_quit, "%s quit the chat\n",usernames[i]);
                     username_flag[i] = 0;
                     memset(usernames[i],0,BUF_SIZE);
@@ -196,19 +191,13 @@ int main(int argc , char *argv[])
                     if (!username_flag[i]){
                       char *username_start = strchr(buffer, ':');
                       strcpy(usernames[i], username_start + 2);
+                      usernames[i][strlen(usernames[i])-1] = '\0';
                       username_flag[i] = 1;
                     }
-                    //printf("%s\n", usernames[i]);
-                    // strncpy(buffer, usernames[i], strlen(usernames[i])-1);
                     if (j != i) {
                       send(sd , buffer , strlen(buffer) , 0 );
-                      //send(sd , usernames[i] , 24 , 0 );
                     }
                   }
-                    // //set the string terminating NULL byte on the end
-                    // // of the data read
-                    // buffer[valread] = '\0';
-                    // send(sd , buffer , strlen(buffer) , 0 );
                 }
 
             }

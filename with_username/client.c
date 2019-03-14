@@ -30,9 +30,7 @@ void * receiveMessage(void * socket) {
   else if (ret < 0) {
    printf("Error receiving data!\n");
   } else {
-   // printf("server: ");
    fputs(buffer, stdout);
-   //printf("\n");
   }
  }
 }
@@ -93,8 +91,6 @@ int main(int argc, char const *argv[])
     while(fgets(buffer, BUF_SIZE, stdin) != NULL) {
         char message_buffer[BUF_SIZE] = {0};
         if (!username_flag) {
-          // buffer[strlen(buffer)] = ':';
-          // buffer[strlen(buffer)+1] = '\0';
           int length = strlen(buffer);
           strncpy(username, buffer, length-1);
           username[length+1] = '\0';
@@ -110,9 +106,6 @@ int main(int argc, char const *argv[])
           printf("Error sending data");
           exit(1);
         }
-        // printf("Message sent\n");
-        //valread = read( sock , buffer, 1024);
-        //printf("%s\n",buffer );
         memset(buffer, '0', BUF_SIZE);
     }
     close(sock);
