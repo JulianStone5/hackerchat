@@ -16,6 +16,7 @@
 #define PORT 9000
 #define BUF_SIZE 1024
 #define CLIENT_NUM 30
+#define CHAT_NUM 10
 
 int main(int argc , char *argv[])
 {
@@ -25,7 +26,8 @@ int main(int argc , char *argv[])
     int max_sd;
     struct sockaddr_in address;
     char usernames[CLIENT_NUM][BUF_SIZE];
-    int username_flag[CLIENT_NUM] = {0};
+    char chat[CHAT_NUM][BUF_SIZE]; //name of chat the user opts into
+    int flag[CLIENT_NUM] = {0};
     char buffer[BUF_SIZE];  //data buffer of 1K
 
     //set of socket descriptors
@@ -171,40 +173,62 @@ int main(int argc , char *argv[])
                     char message_quit[BUF_SIZE];
                     printf("username: %s\n", usernames[i]);
                     sprintf(message_quit, "%s quit the chat\n",usernames[i]);
-                    username_flag[i] = 0;
+                    flag[i] = 0;
                     memset(usernames[i],0,BUF_SIZE);
 
-                    for(int k = 0; k < max_clients; k++){
-                      sd = client_socket[k];
-                      send(sd,message_quit,strlen(message_quit),0);
+                    for(int j = 0; j < max_clients; j++){
+                      sd = client_socket[j];
+                      if(strcmp(chat[i], chat[j])==0) {
+                        send(sd,message_quit,strlen(message_quit),0);
+                      }
                     }
 
                 }
 
-                //Echo back the message that came in
+
                 else
                 {
-                  for (int j = 0; j < max_clients; j++) {
-                    //printf("valread: %d", valread);
-                    sd = client_socket[j];
-                    buffer[valread] = '\0';
-                    if (!username_flag[i]){
-                      char *username_start = strchr(buffer, ':');
-                      strcpy(usernames[i], username_start + 2);
-                      usernames[i][strlen(usernames[i])-1] = '\0';
-                      username_flag[i] = 1;
+                  buffer[valread] = '\0';
+                  if (flag[i]==0){
+                    char *username_start = strchr(buffer, ':'); //records username
+                    strcpy(usernames[i], username_start + 2);
+                    usernames[i][strlen(usernames[i])-1] = '\0';
+                    flag[i] = 1;
+                    char *chat_message = "PLEASE TYPE THE NAME OF CHAT YOU'D LIKE TO JOIN: \r\n";
+                    send(client_socket[i],chat_message,strlen(chat_message),0);
+                    // for(int j = 0; j < )
+                  }
+                  else if(flag[i]==1) {
+                    char *chat_start = strchr(buffer, ':'); //records chat name
+                    strcpy(chat[i], chat_start + 2);
+                    chat[i][strlen(chat[i])-1] = '\0';
+                    flag[i] = 2;
+                    char *confirm_message = "YOU HAVE SUCCESSFULLY JOINED THE CHAT! \r\n";
+                    send(client_socket[i],confirm_message,strlen(confirm_message),0);
+
+                    char *joined_message = " HAS JOINED THE CHAT! \r\n"; //informs other users
+                    char temp[100];                                      //in chat
+                    strcpy(temp, usernames[i]);
+                    strcat(temp, joined_message);
+                    for (int j = 0; j < max_clients; j++) {
+                      sd = client_socket[j];
+                      if (j != i && (strcmp(chat[i], chat[j])==0)) {
+                        send(sd , temp , strlen(temp) , 0 );
+                      }
                     }
-                    if (j != i) {
-                      send(sd , buffer , strlen(buffer) , 0 );
+                  }
+                  else {
+                    for (int j = 0; j < max_clients; j++) {
+                      sd = client_socket[j];
+                      //sends to all users within the same chat except the sender
+                      if (j != i && (strcmp(chat[i], chat[j])==0)) {
+                        send(sd , buffer , strlen(buffer) , 0 );
+                      }
                     }
                   }
                 }
-
             }
-
         }
-
     }
-
     return 0;
 }
