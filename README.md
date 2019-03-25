@@ -32,5 +32,5 @@ To compile the server and client scripts, run the following command:
 
 * [Simple two way chat with multi-threading](http://www.theinsanetechie.in/2014/01/a-simple-chat-program-in-c-tcp.html)
 
-* [Socket programming (geeks for geeks)](https://www.geeksforgeeks.org/socket-programming-cc/
+* [Socket programming (geeksforgeeks)](https://www.geeksforgeeks.org/socket-programming-cc/
 )
