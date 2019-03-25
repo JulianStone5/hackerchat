@@ -36,24 +36,26 @@ We believe it would be worth considering adding the first link (https://www.geek
 ## Project Explanation
 The finalized version of hackerchat uses a TCP server client model to allow for multiple user connection to the central server. By running the client executable, the user is asked to provide a username and the name of the chat room which they wish to enter. This allows the server to filter all incoming messages so that it can dispures them to those in the same chat room. Our program allows up to 30 clients to be connected at once, and anywhere between 1 and 30 users can be in a given chat.
 
-To enhance the experience further and learn about structuring functionality in a server which continually receives messages in no given order, we added notifications to indicate when a user entered or left a given chat.
+To enhance the experience further and learn about structuring functionality in a server which continually receives messages in no given order, we added notifications to indicate when a user entered or left a given chat. The following diagram illustrates the flow of this functionality once several clients have connected. 
+
+![Server Model](https://github.com/NathanShuster/hackerchat/blob/master/reports/images/server_flow_chart.png)
 
 ## Code Snippets
 
 ## Design Decisions
 For the chat application, we implemented a TCP server client model. The rationale behind this design decision instead of implementing a UDP model is that we value reliability and absolute guarantee that the data transferred remains intact and arrives in the same order in which it was sent. The clients form a direct connection with the server. With the TCP protocol, if the sender does not get a correct response, it will resend the packets to ensure the recipient received them. Packets are also checked for errors.  The general frame of a TCP model can be summarized using the diagram below:
 
-![TCP Model](/images/tcp.png)
+![TCP Model](https://github.com/NathanShuster/hackerchat/blob/master/reports/images/client_server_diagram.png)
 
 ### Server:
 
 The server side of the chat application is able to handle multiple client connection and check activity from each of the client. For the chat application, we decided to implement multiplexing with `select()`.  The syntax of `select()` is
 
-![Select function1](/images/select_fun.png)
+![Select function1](https://github.com/NathanShuster/hackerchat/blob/master/reports/images/select_fun.png)
 
 We first create a set of file descriptors of the data type `fd_set` stored in `readfds`. In `select()` arguments, we tell the kernel we would like to read from each file descriptor and the kernel uses one thread to block on one function call until at least one file descriptor requested operation available. The implementation of select() in the chat application is shown below:
 
-![Select function2](/images/select.png)
+![Select function2](https://github.com/NathanShuster/hackerchat/blob/master/reports/images/select.png)
 
 We decided to use select() instead of other multithreading approaches such as fork() because select allows us to have one process and check for activities from all clients represented as file descriptors. In fork(), we create a new process in the form of a cloned server for every single connection. This creates a layer of complexity when dealing with figuring out the order of running each process and how to broadcast messages to specific clients. Using one process to handle all clients provides us with a easier mental model and platform to build upon.
 
@@ -61,7 +63,7 @@ We decided to use select() instead of other multithreading approaches such as fo
 
 The socket programming aspect on the client side is similar to that of a server. The server has an order of receiving and sending messages: send welcome message to new client, receive message from all clients and redirect message to corresponding client. This is different for the client. The client side of the chat application uses threading to handle both receiving and sending messages functionality since there is no inherent order between which action happens before another. The threading part is shown below:
 
-![Client threading](/images/client_thread.png)
+![Client threading](https://github.com/NathanShuster/hackerchat/blob/master/reports/images/client_thread.png)
 
 ### Additional functionality:
 
