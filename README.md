@@ -26,6 +26,8 @@ To compile the server and client scripts, run the following command:
 * **Nathan Shuster**
 
 ## Acknowledgments
+Because the code for connecting is highly similar across most programs, there are parts of our project--in particular the socket code--that were copied from some of the below sources due to being standard procedure.
+
 * [TCP server client implementation (geeksforgeeks)](https://www.geeksforgeeks.org/tcp-server-client-implementation-in-c/)
 
 * [Multiple client without multi-threading (geeksforgeeks)](https://www.geeksforgeeks.org/socket-programming-in-cc-handling-multiple-clients-on-server-without-multi-threading/)
