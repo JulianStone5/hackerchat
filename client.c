@@ -13,7 +13,7 @@
 #define PORT 9000
 #define BUF_SIZE 1024
 
-int username_flag = 1;
+int username_flag = 0; // 0: username not set
 
 void * receiveMessage(void * socket) {
  int sockfd, ret;
@@ -30,9 +30,7 @@ void * receiveMessage(void * socket) {
   else if (ret < 0) {
    printf("Error receiving data!\n");
   } else {
-   // printf("server: ");
    fputs(buffer, stdout);
-   //printf("\n");
   }
  }
 }
@@ -42,7 +40,7 @@ int main(int argc, char const *argv[])
     struct sockaddr_in address;
     int sock = 0;
     struct sockaddr_in serv_addr;
-    char *hello = "Hello from client";
+    char username[BUF_SIZE];
     char buffer[BUF_SIZE] = {0};
     char * serverAddr;
     pthread_t rThread;
@@ -86,26 +84,28 @@ int main(int argc, char const *argv[])
      exit(1);
     }
 
-    if(username_flag){
+    if(!username_flag){
       printf("Hack3rCh@t v1.0\n");
-
     }
 
     while(fgets(buffer, BUF_SIZE, stdin) != NULL) {
-        //int ret = send(sock , hello , strlen(hello) , 0 );
-        // if (username_flag) {
-        //   // buffer[strlen(buffer)] = ':';
-        //   // buffer[strlen(buffer)+1] = '\0';
-        // }
-        ret = send(sock , buffer , BUF_SIZE , 0);
-        // username_flag = 0;
+        char message_buffer[BUF_SIZE] = {0};
+        if (!username_flag) {
+          int length = strlen(buffer);
+          strncpy(username, buffer, length-1);
+          username[length+1] = '\0';
+          sprintf(message_buffer,"New user joined: %s\n", username);
+          username_flag = 1;
+        }
+        else{
+          sprintf(message_buffer,"%s: %s", username,buffer);
+        }
+        //printf("message: %s", message_buffer);
+        ret = send(sock , message_buffer , BUF_SIZE , 0);
         if(ret < 0) {
           printf("Error sending data");
           exit(1);
         }
-        // printf("Message sent\n");
-        //valread = read( sock , buffer, 1024);
-        //printf("%s\n",buffer );
         memset(buffer, '0', BUF_SIZE);
     }
     close(sock);

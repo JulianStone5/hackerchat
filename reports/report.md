@@ -13,6 +13,9 @@ We want to increase our comfort level of developing in C and construct a basic u
 We first needed to learn about basic concepts of server-client communications. We started this by reading Chapter 11 of Head First C and Chapter 9 of Think OS. From there, we have continued seeking out resources as needed to develop our understanding. We have found several chat-room repositories on GitHub that we are referencing throughout the process. Additionally, we have found project ideas for expanding beyond a 2-person chat room that outline the difficulty level of different expansions. We have been following the example from geeks for geeks on creating a tcp server client and an example we found on creating a one to one chat program with threading.
 
 ## Project Explanation
+The finalized version of hackerchat uses a TCP server client model to allow for multiple user connection to the central server. By running the client executable, the user is asked to provide a username and the name of the chat room which they wish to enter. This allows the server to filter all incoming messages so that it can dispures them to those in the same chat room. Our program allows up to 30 clients to be connected at once, and anywhere between 1 and 30 users can be in a given chat.
+
+To enhance the experience further and learn about structuring functionality in a server which continually receives messages in no given order, we added notifications to indicate when a user entered or left a given chat.
 
 ## Code Snippets
 

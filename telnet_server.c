@@ -1,5 +1,3 @@
-//Example code: A simple server side code, which echos back the received message.
-//Handle multiple socket connections with select and fd_set on Linux
 #include <stdio.h>
 #include <string.h>   //strlen
 #include <stdlib.h>
@@ -16,6 +14,7 @@
 #define PORT 9000
 #define BUF_SIZE 1024
 #define CLIENT_NUM 30
+#define CHAT_NUM 10
 
 int main(int argc , char *argv[])
 {
@@ -24,8 +23,9 @@ int main(int argc , char *argv[])
           max_clients = CLIENT_NUM , activity, i , valread , sd;
     int max_sd;
     struct sockaddr_in address;
-    char usernames[CLIENT_NUM][24];
-
+    char usernames[CLIENT_NUM][BUF_SIZE];
+    char chat[CHAT_NUM][BUF_SIZE]; //name of chat the user opts into
+    int flag[CLIENT_NUM] = {0};
     char buffer[BUF_SIZE];  //data buffer of 1K
 
     //set of socket descriptors
@@ -61,7 +61,7 @@ int main(int argc , char *argv[])
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons( PORT );
 
-    //bind the socket to localhost port 8888
+    //bind the socket to localhost port 9000
     if (bind(master_socket, (struct sockaddr *)&address, sizeof(address))<0)
     {
         perror("bind failed");
@@ -141,13 +141,6 @@ int main(int argc , char *argv[])
                 //if position is empty
                 if( client_socket[i] == 0 )
                 {
-
-                    valread = read( new_socket , usernames[i], 24);
-                    printf("%d", valread);
-                    //usernames[i][valread] = ':';
-                    //usernames[i][valread] = '\0';
-
-
                     client_socket[i] = new_socket;
                     printf("Adding to list of sockets as %d\n" , i);
 
@@ -170,39 +163,69 @@ int main(int argc , char *argv[])
                     //Somebody disconnected , get his details and print
                     getpeername(sd , (struct sockaddr*)&address , (socklen_t*)&addrlen);
                     printf("Host disconnected , ip %s , port %d \n" , inet_ntoa(address.sin_addr) , ntohs(address.sin_port));
-
                     //Close the socket and mark as 0 in list for reuse
                     close( sd );
                     client_socket[i] = 0;
+
+                    // signal everyone else user quit
+                    char message_quit[BUF_SIZE];
+                    printf("username: %s\n", usernames[i]);
+                    sprintf(message_quit, "%s quit the chat\n",usernames[i]);
+                    flag[i] = 0;
+                    memset(usernames[i],0,BUF_SIZE);
+
+                    for(int j = 0; j < max_clients; j++){
+                      sd = client_socket[j];
+                      if(strcmp(chat[i], chat[j])==0) {
+                        send(sd,message_quit,strlen(message_quit),0);
+                      }
+                    }
+
                 }
 
-                //Echo back the message that came in
+
                 else
                 {
-                  for (int j = 0; j < max_clients; j++) {
-                    printf("valread: %d", valread);
-                    sd = client_socket[j];
-                    buffer[valread] = '\0';
+                  buffer[valread] = '\0';
+                  if (flag[i]==0){
+                    char *username_start = strchr(buffer, ':'); //records username
+                    strcpy(usernames[i], username_start + 2);
+                    usernames[i][strlen(usernames[i])-1] = '\0';
+                    flag[i] = 1;
+                    char *chat_message = "PLEASE TYPE THE NAME OF CHAT YOU'D LIKE TO JOIN: \r\n";
+                    send(client_socket[i],chat_message,strlen(chat_message),0);
+                  }
+                  else if(flag[i]==1) {
+                    char *chat_start = strchr(buffer, ':'); //records chat name
+                    strcpy(chat[i], chat_start + 2);
+                    chat[i][strlen(chat[i])-1] = '\0';
+                    flag[i] = 2;
+                    char *confirm_message = "YOU HAVE SUCCESSFULLY JOINED THE CHAT! \r\n";
+                    send(client_socket[i],confirm_message,strlen(confirm_message),0);
 
-                    printf("%s\n", usernames[i]);
-                    // strncpy(buffer, usernames[i], strlen(usernames[i])-1);
-                    if (j != i) {
-                      send(sd , buffer , strlen(buffer) , 0 );
-                      send(sd , usernames[i] , 24 , 0 );
-
+                    char *joined_message = " HAS JOINED THE CHAT! \r\n"; //informs other users
+                    char temp[100];                                      //in chat
+                    strcpy(temp, usernames[i]);
+                    strcat(temp, joined_message);
+                    for (int j = 0; j < max_clients; j++) {
+                      sd = client_socket[j];
+                      if (j != i && (strcmp(chat[i], chat[j])==0)) {
+                        send(sd , temp , strlen(temp) , 0 );
+                      }
                     }
                   }
-                    // //set the string terminating NULL byte on the end
-                    // // of the data read
-                    // buffer[valread] = '\0';
-                    // send(sd , buffer , strlen(buffer) , 0 );
+                  else {
+                    for (int j = 0; j < max_clients; j++) {
+                      sd = client_socket[j];
+                      //sends to all users within the same chat except the sender
+                      if (j != i && (strcmp(chat[i], chat[j])==0)) {
+                        send(sd , buffer , strlen(buffer) , 0 );
+                      }
+                    }
+                  }
                 }
-
             }
-
         }
-
     }
-
     return 0;
 }
