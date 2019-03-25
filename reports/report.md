@@ -18,15 +18,16 @@ We were able to achieve all of our learning goals and in particular gained a str
 ## Resources
 In addition to the suggested HeadFirst C chapter 11 and Think OS chapter 9, we tapped a variety of resources throughout the development process. The most broadly useful came from the website geeksforgeeks.org because of their superior documentation compared to most other resources we could find online.
 
-This was the most used link and helped get our first, two-way chat working.
-[https://www.geeksforgeeks.org/tcp-server-client-implementation-in-c/]
+This was the most used link and helped get our first, two-way chat working.<br/>
+https://www.geeksforgeeks.org/tcp-server-client-implementation-in-c/
 
-This one helped us expand our program to work with more than one user.
-[https://www.geeksforgeeks.org/socket-programming-in-cc-handling-multiple-clients-on-server-without-multi-threading/]
+This one helped us expand our program to work with more than one user.<br/>
+https://www.geeksforgeeks.org/socket-programming-in-cc-handling-multiple-clients-on-server-without-multi-threading/
 
-And the below two were helpful for conceptual understanding and debugging.
-[http://www.theinsanetechie.in/2014/01/a-simple-chat-program-in-c-tcp.html]
-[https://www.geeksforgeeks.org/socket-programming-cc/]
+And the below two were helpful for conceptual understanding and debugging.<br/>
+http://www.theinsanetechie.in/2014/01/a-simple-chat-program-in-c-tcp.html
+<br/>
+https://www.geeksforgeeks.org/socket-programming-cc/]
 
 
 We believe it would be worth considering adding the first link (https://www.geeksforgeeks.org/tcp-server-client-implementation-in-c/) to the class resources.
