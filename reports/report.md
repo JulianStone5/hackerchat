@@ -32,6 +32,8 @@ https://www.geeksforgeeks.org/socket-programming-cc/]
 
 We believe it would be worth considering adding the first link (https://www.geeksforgeeks.org/tcp-server-client-implementation-in-c/) to the class resources.
 
+Because the code for connecting is highly similar across most programs, there are parts of our project--in particular the socket code--that were copied from the above sources. We walked through the code that we used line by line and understand it, but it didn't need additional modification. Most functionalit, such as usernames and multiple chatrooms, was entirely original.
+
 
 ## Project Explanation
 The finalized version of hackerchat uses a TCP server client model to allow for multiple user connection to the central server. By running the client executable, the user is asked to provide a username and the name of the chat room which they wish to enter. This allows the server to filter all incoming messages so that it can dispures them to those in the same chat room. Our program allows up to 30 clients to be connected at once, and anywhere between 1 and 30 users can be in a given chat.
