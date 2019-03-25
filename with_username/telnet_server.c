@@ -63,7 +63,7 @@ int main(int argc , char *argv[])
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons( PORT );
 
-    //bind the socket to localhost port 8888
+    //bind the socket to localhost port 9000
     if (bind(master_socket, (struct sockaddr *)&address, sizeof(address))<0)
     {
         perror("bind failed");
