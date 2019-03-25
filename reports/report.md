@@ -32,7 +32,7 @@ https://www.geeksforgeeks.org/socket-programming-cc/]
 
 We believe it would be worth considering adding the first link (https://www.geeksforgeeks.org/tcp-server-client-implementation-in-c/) to the class resources.
 
-Because the code for connecting is highly similar across most programs, there are parts of our project--in particular the socket code--that were copied from the above sources. We walked through the code that we used line by line and understand it, but it didn't need additional modification. Most functionalit, such as usernames and multiple chatrooms, was entirely original.
+Because the code for connecting is highly similar across most programs, there are parts of our project--in particular the socket code--that were copied from the above sources due to being standard procedure. Most functionalities built on top, such as usernames and multiple chatrooms, were entirely original.
 
 
 ## Project Explanation
