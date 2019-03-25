@@ -3,14 +3,34 @@
 ### Ashley Swanson, Nathan Shuster, Sherrie Shen
 #### March 26th, 2019
 
-## Project Goals
-The goal of this project is to create a chat app using socket programming. Our minimum viable product is a two-way chat where the server and the client each represent a user, and each selects a username at the start. A more ambitious version that we would like to strive for is a server that connects to multiple clients at once and passes messages between them using forking. We would also like to add an in-app game such as rock-paper-scissors to learn more about data processing on the server-side.
+## Project Description
+We developed a command line chat application that works with a set of computers on the same network. In addition to messaging, users can set usernames, join chat rooms, and see when new users join or leave a chat.
+
+At the beginning of the semester, the MVP was defined as a two chat and the stretch goal set as usernames, chatrooms, multiple users, and mini-games (such as rock paper scissors) inside of the program. We easily achieved our MVP and most of our stretch goals but unfortunately ran out of time and fell short of implementing minigames.
+
 
 ## Learning Goals
-We want to increase our comfort level of developing in C and construct a basic understanding of network programming. By the end of the project, we should understand and be able to implement mechanics of creating clients and servers with socket programming in C with a TCP/IP client server model. This learning includes both the process necessary to connect a client and server, as well as the mechanics of passing information between the two, error checking, and potentially processing data on the server-side in the case of our project extension.
+Our primary goal was to understand how client/server and socket programming can be used to develop a successful chat application in C. We hoped to learn about how to implement such a network (using the TCP/IP model) and also to explore topics like threading. In addition, we aimed to increase our comfort level developing in C through the successful development of the program.
+
+We were able to achieve all of our learning goals and in particular gained a strong understanding of socket programming that we hope will be useful in the coming weeks as it is covered in class.
+
 
 ## Resources
-We first needed to learn about basic concepts of server-client communications. We started this by reading Chapter 11 of Head First C and Chapter 9 of Think OS. From there, we have continued seeking out resources as needed to develop our understanding. We have found several chat-room repositories on GitHub that we are referencing throughout the process. Additionally, we have found project ideas for expanding beyond a 2-person chat room that outline the difficulty level of different expansions. We have been following the example from geeks for geeks on creating a tcp server client and an example we found on creating a one to one chat program with threading.
+In addition to the suggested HeadFirst C chapter 11 and Think OS chapter 9, we tapped a variety of resources throughout the development process. The most broadly useful came from the website geeksforgeeks.org because of their superior documentation compared to most other resources we could find online.
+
+This was the most used link and helped get our first, two-way chat working.
+[https://www.geeksforgeeks.org/tcp-server-client-implementation-in-c/]
+
+This one helped us expand our program to work with more than one user.
+[https://www.geeksforgeeks.org/socket-programming-in-cc-handling-multiple-clients-on-server-without-multi-threading/]
+
+And the below two were helpful for conceptual understanding and debugging.
+[http://www.theinsanetechie.in/2014/01/a-simple-chat-program-in-c-tcp.html]
+[https://www.geeksforgeeks.org/socket-programming-cc/]
+
+
+We believe it would be worth considering adding the first link (https://www.geeksforgeeks.org/tcp-server-client-implementation-in-c/) to the class resources.
+
 
 ## Project Explanation
 The finalized version of hackerchat uses a TCP server client model to allow for multiple user connection to the central server. By running the client executable, the user is asked to provide a username and the name of the chat room which they wish to enter. This allows the server to filter all incoming messages so that it can dispures them to those in the same chat room. Our program allows up to 30 clients to be connected at once, and anywhere between 1 and 30 users can be in a given chat.
