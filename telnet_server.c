@@ -25,7 +25,7 @@ int main(int argc , char *argv[])
     struct sockaddr_in address;
     char usernames[CLIENT_NUM][BUF_SIZE];
     char chat[CHAT_NUM][BUF_SIZE]; //name of chat the user opts into
-    int flag[CLIENT_NUM] = {0};
+    int flag[CLIENT_NUM] = {0}; //0 when no client; 1 when username set but not chat room not set; 2 when username and chat room set
     char buffer[BUF_SIZE];  //data buffer of 1K
 
     //set of socket descriptors
@@ -199,7 +199,7 @@ int main(int argc , char *argv[])
                     char *chat_start = strchr(buffer, ':'); //records chat name
                     strcpy(chat[i], chat_start + 2);
                     chat[i][strlen(chat[i])-1] = '\0';
-                    flag[i] = 2;
+                    flag[i] = 2; // change state of flag for this client
                     char *confirm_message = "YOU HAVE SUCCESSFULLY JOINED THE CHAT! \r\n";
                     send(client_socket[i],confirm_message,strlen(confirm_message),0);
 
