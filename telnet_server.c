@@ -162,7 +162,8 @@ int main(int argc , char *argv[])
                 {
                     //Somebody disconnected , get his details and print
                     getpeername(sd , (struct sockaddr*)&address , (socklen_t*)&addrlen);
-                    printf("Host disconnected , ip %s , port %d \n" , inet_ntoa(address.sin_addr) , ntohs(address.sin_port));
+                    printf("Host disconnected , ip %s , port %d \n" , inet_ntoa(address.sin_addr),
+                    ntohs(address.sin_port));
                     //Close the socket and mark as 0 in list for reuse
                     close( sd );
                     client_socket[i] = 0;
@@ -176,7 +177,7 @@ int main(int argc , char *argv[])
 
                     for(int j = 0; j < max_clients; j++){
                       sd = client_socket[j];
-                      if(strcmp(chat[i], chat[j])==0) {
+                      if(strcmp(chat[i], chat[j])==0) { //notifies other that user has left
                         send(sd,message_quit,strlen(message_quit),0);
                       }
                     }
@@ -187,7 +188,7 @@ int main(int argc , char *argv[])
                 else
                 {
                   buffer[valread] = '\0';
-                  if (flag[i]==0){
+                  if (flag[i]==0){ //assumes first message from client is username
                     char *username_start = strchr(buffer, ':'); //records username
                     strcpy(usernames[i], username_start + 2);
                     usernames[i][strlen(usernames[i])-1] = '\0';
@@ -195,7 +196,7 @@ int main(int argc , char *argv[])
                     char *chat_message = "PLEASE TYPE THE NAME OF CHAT YOU'D LIKE TO JOIN: \r\n";
                     send(client_socket[i],chat_message,strlen(chat_message),0);
                   }
-                  else if(flag[i]==1) {
+                  else if(flag[i]==1) { //assumes second message from client is chat name
                     char *chat_start = strchr(buffer, ':'); //records chat name
                     strcpy(chat[i], chat_start + 2);
                     chat[i][strlen(chat[i])-1] = '\0';
@@ -214,7 +215,7 @@ int main(int argc , char *argv[])
                       }
                     }
                   }
-                  else {
+                  else { //occurs once username and chat name have been recorded
                     for (int j = 0; j < max_clients; j++) {
                       sd = client_socket[j];
                       //sends to all users within the same chat except the sender

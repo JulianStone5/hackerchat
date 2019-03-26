@@ -97,10 +97,10 @@ int main(int argc, char const *argv[])
           sprintf(message_buffer,"New user joined: %s\n", username);
           username_flag = 1;
         }
-        else{
+        else { //occurs once user provides username
           sprintf(message_buffer,"%s: %s", username,buffer);
         }
-        //printf("message: %s", message_buffer);
+        //inserts username at start of message
         ret = send(sock , message_buffer , BUF_SIZE , 0);
         if(ret < 0) {
           printf("Error sending data");
