@@ -40,7 +40,7 @@ The finalized version of hackerchat uses a TCP server client model to allow for 
 
 To enhance the experience further and learn about structuring functionality in a server which continually receives messages in no given order, we added notifications to indicate when a user entered or left a given chat. The following diagram illustrates the flow of the server's functionality when it detects activity from a client. 
 
-![Server Model](https://github.com/NathanShuster/hackerchat/blob/master/reports/images/server_flow_chart.png)
+![Server Model](https://github.com/NathanShuster/hackerchat/blob/master/reports/images/server_flowchart.png)
 
 Once the server has multiple users with recorded usernames and specified chat names, it processes messages by comparing the chat name associated with each user. It then sends the message to those users, but does not send to itself. 
 
