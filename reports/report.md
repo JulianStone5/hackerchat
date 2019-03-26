@@ -6,7 +6,7 @@
 ## Project Description
 We developed a command line chat application that works with a set of computers on the same network. In addition to messaging, users can set usernames, join chat rooms, and see when new users join or leave a chat.
 
-At the beginning of the semester, the MVP was defined as a two chat and the stretch goal set as usernames, chatrooms, multiple users, and mini-games (such as rock paper scissors) inside of the program. We easily achieved our MVP and most of our stretch goals but unfortunately ran out of time and fell short of implementing minigames.
+At the beginning of the semester, the MVP was defined as a two-way chat between a server and a client. The stretch goal set were usernames, multiple users, chatrooms, and mini-games (such as rock paper scissors) inside of the program. We easily achieved our MVP and most of our stretch goals but unfortunately ran out of time and fell short of implementing minigames.
 
 
 ## Learning Goals
@@ -32,17 +32,27 @@ https://www.geeksforgeeks.org/socket-programming-cc/]
 
 We believe it would be worth considering adding the first link (https://www.geeksforgeeks.org/tcp-server-client-implementation-in-c/) to the class resources.
 
-Because the code for connecting is highly similar across most programs, there are parts of our project--in particular the socket code--that were copied from the above sources due to being standard procedure. 
+Because the code for connecting is highly similar across most programs, there are parts of our project--in particular the socket code--that were copied from the above sources due to being standard procedure.
 
 
 ## Project Explanation
 The finalized version of hackerchat uses a TCP server client model to allow for multiple user connection to the central server. By running the client executable, the user is asked to provide a username and the name of the chat room which they wish to enter. This allows the server to filter all incoming messages so that it can dispures them to those in the same chat room. Our program allows up to 30 clients to be connected at once, and anywhere between 1 and 30 users can be in a given chat.
 
-To enhance the experience further and learn about structuring functionality in a server which continually receives messages in no given order, we added notifications to indicate when a user entered or left a given chat. The following diagram illustrates the flow of this functionality once several clients have connected. 
+To enhance the experience further and learn about structuring functionality in a server which continually receives messages in no given order, we added notifications to indicate when a user entered or left a given chat. The following diagram illustrates the flow of the server's functionality when it detects activity from a client. 
 
 ![Server Model](https://github.com/NathanShuster/hackerchat/blob/master/reports/images/server_flow_chart.png)
 
-## Code Snippets
+Once the server has multiple users with recorded usernames and specified chat names, it processes messages by comparing the chat name associated with each user. It then sends the message to those users, but does not send to itself. 
+
+![Multi_User](https://github.com/NathanShuster/hackerchat/blob/master/reports/images/multi_user.png)
+
+For our username functionality, we decided to tack the username onto the front of the message in the client itself and then send the message with the format “username: message” already established. However, we still needed to record usernames in the server so that, when a user disconnected, the server could tell others who had left.
+
+![Multi_User](https://github.com/NathanShuster/hackerchat/blob/master/reports/images/username_code.png)
+
+Our disconnect condition consisted of seeing that a client had been active but did not send any form of message. We then reset the client socket to 0 to be used again. 
+
+![Multi_User](https://github.com/NathanShuster/hackerchat/blob/master/reports/images/disconnect.png)
 
 ## Design Decisions
 For the chat application, we implemented a TCP server client model. The rationale behind this design decision instead of implementing a UDP model is that we value reliability and absolute guarantee that the data transferred remains intact and arrives in the same order in which it was sent. The clients form a direct connection with the server. With the TCP protocol, if the sender does not get a correct response, it will resend the packets to ensure the recipient received them. Packets are also checked for errors.  The general frame of a TCP model can be summarized using the diagram below:
