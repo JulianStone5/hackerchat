@@ -54,6 +54,7 @@ Our disconnect condition consisted of seeing that a client had been active but d
 
 ![Multi_User](https://github.com/NathanShuster/hackerchat/blob/master/reports/images/disconnect.png)
 
+
 ## Design Decisions
 For the chat application, we implemented a TCP server client model. The rationale behind this design decision instead of implementing a UDP model is that we value reliability and absolute guarantee that the data transferred remains intact and arrives in the same order in which it was sent. The clients form a direct connection with the server. With the TCP protocol, if the sender does not get a correct response, it will resend the packets to ensure the recipient received them. Packets are also checked for errors.  The general frame of a TCP model can be summarized using the diagram below:
 
@@ -76,10 +77,6 @@ We decided to use select() instead of other multithreading approaches such as fo
 The socket programming aspect on the client side is similar to that of a server. The server has an order of receiving and sending messages: send welcome message to new client, receive message from all clients and redirect message to corresponding client. This is different for the client. The client side of the chat application uses threading to handle both receiving and sending messages functionality since there is no inherent order between which action happens before another. The threading part is shown below:
 
 ![Client threading](https://github.com/NathanShuster/hackerchat/blob/master/reports/images/client_thread.png)
-
-### Additional functionality:
-
-To make our chat application more realistic to an actual chat application, we added a few functionalities on top of the TCP server client model. We allowed user to enter a username and display the username of each sender along with the message. We also added multiple chat room functionality where the user can choose to join specific chat groups.
 
 
 ## Reflections
