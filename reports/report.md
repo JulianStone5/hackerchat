@@ -8,6 +8,11 @@ We developed a command line chat application that works with a set of computers 
 
 At the beginning of the semester, the MVP was defined as a two-way chat between a server and a client. The stretch goal set were usernames, multiple users, chatrooms, and mini-games (such as rock paper scissors) inside of the program. We easily achieved our MVP and most of our stretch goals but unfortunately ran out of time and fell short of implementing minigames.
 
+Here is a screenshot of it in action:
+
+![Screenshot](https://github.com/NathanShuster/hackerchat/blob/master/reports/images/screenshot1.png)
+
+The upper left terminal is running the server and the other 3 are users that are connected to it in the chat "Softsys". Notice that messages sent from each user appears in all others and the message text is preceded by the corresponding username. Any messages with no preceding username were sent by that user.
 
 ## Learning Goals
 Our primary goal was to understand how client/server and socket programming can be used to develop a successful chat application in C. We hoped to learn about how to implement such a network (using the TCP/IP model) and also to explore topics like threading. In addition, we aimed to increase our comfort level developing in C through the successful development of the program.
