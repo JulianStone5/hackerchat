@@ -1,5 +1,4 @@
-# HackerChat
-## Software Systems Project 1
+# HackerChat: Terminal based chat application (TCP)
 ### Ashley Swanson, Nathan Shuster, Sherrie Shen
 #### March 26th, 2019
 
