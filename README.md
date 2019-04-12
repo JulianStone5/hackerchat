@@ -1,5 +1,4 @@
 # HackerChat: Terminal Based Chat Application (TCP)
-## Software System Project 1
 
 A command line chat application that works with a set of computers on the same network. In addition to messaging, users can set usernames, join chat rooms, and see when new users join or leave a chat.
 
